@@ -64,7 +64,7 @@ async def change_user(msg: types.Message):
 
 
 @dp.callback_query_handler(lambda c: c.data == 'connect')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def connect_user(callback_query: types.CallbackQuery):
     log(f'{time.ctime()} {callback_query.from_user.id} connect \n')
 
     button1 = InlineKeyboardButton("Продлить🚀", callback_data='to_extend')
@@ -96,8 +96,22 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 
 
 
+@dp.callback_query_handler(lambda c: c.data == 'remove')
+async def remove_user(callback_query: types.CallbackQuery):
+    log(f'{time.ctime()} {callback_query.from_user.id} remove \n')
+    id_user = callback_query.message.text.split()[-1]
+    if check_in_db(id_user):
+        deactive_user_db(id_user)
+        await bot.send_message(callback_query.from_user.id, 'Пользователь Удален')
+    else:
+        await bot.send_message(callback_query.from_user.id, 'Пользователь нет в базе')
+        
+    
+
+
+
 @dp.callback_query_handler(lambda c: c.data == 'remeber_conf')
-async def process_callback_button1(callback_query: types.CallbackQuery):
+async def remember_conf_user(callback_query: types.CallbackQuery):
     log(f'{time.ctime()} {callback_query.from_user.id} remeber_conf \n')
     button1 = InlineKeyboardButton("Подключиться🚀", callback_data='connect')
     otvet2 = InlineKeyboardMarkup().add(button1)
