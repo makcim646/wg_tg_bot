@@ -39,7 +39,7 @@ async def change_user(msg: types.Message):
     if msg.chat.id in admin:
         if msg.forward_from != None:
             id_user = msg.forward_from.id
-            await bot.send_message(msg.chat.id, f' Подключить {id_user}?',reply_markup=otvet1)
+            await bot.send_message(msg.chat.id, f' Подключить {id_user}',reply_markup=otvet1)
         else:
             await bot.send_message(msg.chat.id, 'Перешли сообщение от того кого хочешь добавить.')
 
@@ -99,7 +99,6 @@ async def process_callback_button1(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data == 'remeber_conf')
 async def process_callback_button1(callback_query: types.CallbackQuery):
     log(f'{time.ctime()} {callback_query.from_user.id} remeber_conf \n')
-    print(callback_query.from_user.id, 'remeber_conf')
     button1 = InlineKeyboardButton("Подключиться🚀", callback_data='connect')
     otvet2 = InlineKeyboardMarkup().add(button1)
 

@@ -56,6 +56,25 @@ def add_in_db(id_user):
 
     with open('db.json', 'w') as file_in:
         json.dump(basa_users, file_in, indent=4)
+        
+
+def deactive_user_db(id_user):
+    #удаеть конфиг клиента из wireguard и отмечает это в своей базе
+    id_user = str(id_user)
+    with open('db.json', 'r') as file:
+        basa_users = json.load(file)
+
+
+    if basa_users.get(id_user) == None:
+        return False
+
+    if subprocess.call(["./revokeclient.sh", id_user]) == 0:
+        basa_users[id_user]['status'] = 'deactive'
+        basa_users[id_user]['day'] = 0
+
+        with open('db.json', 'w') as file_in:
+            json.dump(basa_users, file_in, indent=4)
+        return True
 
 
 def log(text):
