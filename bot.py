@@ -91,6 +91,10 @@ async def connect_user(callback_query: types.CallbackQuery):
         else:
             if creat_new_user(id_user) == 'creat':
                 await bot.send_message(callback_query.from_user.id, 'Пользователь добавлен')
+                with open(f'png/{id_user}.png', 'rb') as pfoto:
+                    await bot.send_photo(int(id_user), pfoto)
+                with open(f'conf/wg0-client-{id_user}.conf', 'rb') as file:
+                    await bot.send_document(int(id_user), file)
             else:
                 await bot.send_message(callback_query.from_user.id, 'Что-то пошло не так, напиши @makcim646')
 
