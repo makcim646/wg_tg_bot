@@ -33,7 +33,8 @@ async def add_user(message: types.Message):
 @dp.message_handler()
 async def change_user(msg: types.Message):
     button1 = InlineKeyboardButton("Подключить🚀", callback_data='connect')
-    otvet1 = InlineKeyboardMarkup().add(button1)
+    button2 = InlineKeyboardButton("Отключить", callback_data='remove')
+    otvet1 = InlineKeyboardMarkup().add(button1, button2)
 
 
     if msg.chat.id in admin:
