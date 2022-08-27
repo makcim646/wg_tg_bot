@@ -1,0 +1,2 @@
+telegram_token = '5231123010:AAHLOVoP7CPb3fCToJvDWUTcM-4eTioXUA4'
+admin =[398598091]
