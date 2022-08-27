@@ -45,7 +45,7 @@ async def change_user(msg: types.Message):
             await bot.send_message(msg.chat.id, 'Перешли сообщение от того кого хочешь добавить.')
 
     else:
-        log(f'{time.ctime()} {msg.from_user.id} {msg.text} \n'.encode('utf-8')+ '\n')
+        log(f'{time.ctime()} {msg.from_user.id} {msg.text} \n')
         msg_text = '''1.Для подключения скачай приложение wireguard
     [Wireguard Android](https://play.google.com/store/apps/details?id=com.wireguard.android&hl=ru&gl=US)
     [Wireguard Ios](https://apps.apple.com/us/app/wireguard/id1441195209)
