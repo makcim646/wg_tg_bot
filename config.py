@@ -1,2 +1,0 @@
-telegram_token = ''
-admin =[]
