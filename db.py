@@ -33,7 +33,7 @@ def gift_list():
     with open('gift.json', 'r') as file:
         basa_users = json.load(file)
 
-    return [user for user in basa_users.keys()]
+    return [user[:-2] for user in basa_users.keys()]
 
 
 def check_in_db(id_user):

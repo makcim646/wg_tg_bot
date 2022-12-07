@@ -6,14 +6,18 @@ from aiogram.types import ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButt
 from db import *
 import time
 from config import get_config
+import logging
 
 
 conf = get_config()
 admin = int(conf['admin_id'])
 token = conf['bot_token']
 
-bot = Bot(token) #Telegram bot token
+bot = Bot(token, parse_mode='MARKDOWN') #Telegram bot token
 dp = Dispatcher(bot)
+
+logging.basicConfig(level=logging.INFO, filename="log.log",filemode="a",
+                    format="%(asctime)s %(levelname)s %(message)s")
 
 
 @dp.message_handler(commands=['adduser'])
@@ -24,25 +28,44 @@ async def add_user(message: types.Message):
         except:
             await bot.send_message(message.chat.id, 'ты не ввел имя пользователя')
             return
-        log(f'{time.ctime()} Try add user {id_user}\n')
+        logging.info(f'Try add user {id_user}\n')
         if root_add(id_user) =='creat':
             with open(f'png/{id_user}.png', 'rb') as pfoto:
                 await bot.send_photo(message.chat.id, pfoto)
             with open(f'conf/{id_user}.conf', 'rb') as file:
                 await bot.send_document(message.chat.id, file)
-            log(f'{time.ctime()} User {id_user} added\n')
+            logging.info(f'User {id_user} added\n')
         else:
             await bot.send_message(message.chat.id, 'Не удалось добавить')
+            logging.info(f'User {id_user} not added\n')
+
+
+@dp.message_handler(commands=['remove'])
+async def add_user(message: types.Message):
+    if message.chat.id == admin:
+        try:
+            id_user = message.text.split(' ')[1]
+        except:
+            await message.answer('ты не ввел имя пользователя')
+            return
+
+        if check_in_db(id_user):
+            deactive_user_db(id_user)
+            await message.answer('Пользователь Удален')
+        else:
+            await message.answer('Пользователь нет в базе')
 
 
 @dp.message_handler(commands=['client'])
 async def see_client(message: types.Message):
     if message.chat.id == admin:
-        clients = client_list()
-        gifts = gift_list()
-        text = 'Clients:\n' + '\n'.join(clients) + '\nGift client:\n' + '\n'.join(gifts)
+        clients = [f"[{client}](tg://user?id={client})" for client in client_list()]
+        gifts = [f'<a href="tg://user?id={client}">{client}</a>' for client in gift_list()]
+        client_text = 'Clients:\n' + '\n'.join(clients)
+        gift_text = '\nGift client:\n' + '\n'.join(gifts)
 
-        await bot.send_message(message.chat.id, text)
+        await message.answer(client_text)
+        await message.answer(gift_text, parse_mode='HTML')
 
 
 @dp.message_handler()
@@ -60,7 +83,7 @@ async def all_msg(msg: types.Message):
             await bot.send_message(msg.chat.id, 'Перешли сообщение от того кого хочешь добавить.')
 
     else:
-        log(f'{time.ctime()} {msg.from_user.id} {msg.text} \n')
+        logging.info(f'{msg.from_user.id} {msg.text} \n')
         msg_text = '''1.Для подключения скачай приложение wireguard
 [Wireguard Android](https://play.google.com/store/apps/details?id=com.wireguard.android&hl=ru&gl=US)
 [Wireguard Ios](https://apps.apple.com/us/app/wireguard/id1441195209)
@@ -81,7 +104,7 @@ async def all_msg(msg: types.Message):
 
 @dp.callback_query_handler(lambda c: c.data == 'connect')
 async def connect_user(callback_query: types.CallbackQuery):
-    log(f'{time.ctime()} {callback_query.from_user.id} connect \n')
+    logging.info(f'{callback_query.from_user.id} connect \n')
 
     if callback_query.from_user.id != admin:
         if check_in_db(callback_query.from_user.id):
@@ -105,7 +128,7 @@ async def connect_user(callback_query: types.CallbackQuery):
     else:
         id_user = callback_query.message.text.split()[-1]
 
-        log(f'{time.ctime()} {callback_query.from_user.id} try connect {id_user} \n')
+        logging.info(f'{callback_query.from_user.id} try connect {id_user} \n')
 
         if check_in_db(id_user):
             await bot.send_message(callback_query.from_user.id, f'У пользователя {id_user} уже есть доступ', reply_markup=otvet3)
@@ -124,7 +147,7 @@ async def connect_user(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == 'remove')
 async def remove_user(callback_query: types.CallbackQuery):
-    log(f'{time.ctime()} {callback_query.from_user.id} remove \n')
+    logging.info(f'{callback_query.from_user.id} remove \n')
     id_user = callback_query.message.text.split()[-1]
     if check_in_db(id_user):
         deactive_user_db(id_user)
@@ -135,7 +158,7 @@ async def remove_user(callback_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == 'remeber_conf')
 async def remember_conf_user(callback_query: types.CallbackQuery):
-    log(f'{time.ctime()} {callback_query.from_user.id} remeber_conf \n')
+    logging.info(f'{callback_query.from_user.id} remeber_conf \n')
     button1 = InlineKeyboardButton("Подключиться🚀", callback_data='connect')
     otvet2 = InlineKeyboardMarkup().add(button1)
 
