@@ -39,7 +39,7 @@ def check_config():
 
 def monitor_gift():
     oneday = 86400
-    onemount = 108000
+    onemount = 604800
     with open('gift.json', 'r') as file:
         basa_users = json.load(file)
 

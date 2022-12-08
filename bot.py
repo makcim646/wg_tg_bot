@@ -99,7 +99,7 @@ async def all_msg(msg: types.Message):
 
         otvet1 = InlineKeyboardMarkup(row_width=2).add(button1, button2)
 
-        await bot.send_message(msg.from_user.id, msg_text, disable_web_page_preview=True, reply_markup=otvet1, parse_mode=types.ParseMode.MARKDOWN)
+        await bot.send_message(msg.from_user.id, msg_text, disable_web_page_preview=True, reply_markup=otvet1)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'connect')
@@ -122,16 +122,19 @@ async def connect_user(callback_query: types.CallbackQuery):
                         await bot.send_document(callback_query.from_user.id, file)
                     await bot.send_message(callback_query.from_user.id, "Тебе предоставлен тестовый период на один день, если захочешь продлить напиши @makcim646")
             else:
+                button = InlineKeyboardButton("Подключить🚀", callback_data='connect')
+                otvet = InlineKeyboardMarkup().add(button)
+                await bot.send_message(admin, f'Пробует подключиться {callback_query.from_user.id}', reply_markup=otvet)
                 await bot.send_message(callback_query.from_user.id, "Чтобы подключиться напиши @makcim646")
 
 
     else:
-        id_user = callback_query.message.text.split()[-1]
+        id_user = callback_query.message.text.split(' ')[-1]
 
         logging.info(f'{callback_query.from_user.id} try connect {id_user} \n')
 
         if check_in_db(id_user):
-            await bot.send_message(callback_query.from_user.id, f'У пользователя {id_user} уже есть доступ', reply_markup=otvet3)
+            await bot.send_message(callback_query.from_user.id, f'У пользователя {id_user} уже есть доступ')
         else:
             if creat_new_user(id_user) == 'creat':
                 await bot.send_message(callback_query.from_user.id, 'Пользователь добавлен')

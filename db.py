@@ -5,7 +5,6 @@ import time
 
 def creat_new_user(id_user):
     #добовляет нового пользователя в свою базу и создает для него конфиг в wireguard
-    id_user = str(id_user)
     if subprocess.call(["./newclient.sh", id_user]) == 0:
         add_in_db(id_user)
         return 'creat'
@@ -15,7 +14,6 @@ def creat_new_user(id_user):
 
 def root_add(id_user):
     #создает навовый конфиг для подключения к wireguard
-    id_user = str(id_user)
     if subprocess.call(["./newclient.sh", id_user]) == 0:
         add_in_db(id_user)
         return 'creat'
@@ -27,13 +25,13 @@ def client_list():
     with open('db.json', 'r') as file:
         basa_users = json.load(file)
 
-    return [user for user in basa_users.keys()]
+    return [user for user, data in basa_users.items() if data['status'] == 'active']
 
 def gift_list():
     with open('gift.json', 'r') as file:
         basa_users = json.load(file)
 
-    return [user[:-2] for user in basa_users.keys()]
+    return [user[:-1] for user in basa_users.keys()]
 
 
 def check_in_db(id_user):
@@ -138,11 +136,6 @@ def deactive_user_db(id_user):
         with open('db.json', 'w') as file_in:
             json.dump(basa_users, file_in, indent=4)
         return True
-
-
-def log(text):
-    with open('log', 'a') as file:
-        file.writelines(str(text))
 
 
 
