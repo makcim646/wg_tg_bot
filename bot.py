@@ -13,11 +13,11 @@ conf = get_config()
 admin = int(conf['admin_id'])
 token = conf['bot_token']
 
-bot = Bot(token, parse_mode='MARKDOWN') #Telegram bot token
+bot = Bot(token, parse_mode='MARKDOWNV2') #Telegram bot token
 dp = Dispatcher(bot)
 
-logging.basicConfig(level=logging.INFO, filename="log.log",filemode="a",
-                    format="%(asctime)s %(levelname)s %(message)s")
+#logging.basicConfig(level=logging.INFO, filename="log.log",filemode="a",
+#                    format="%(asctime)s %(levelname)s %(message)s")
 
 
 @dp.message_handler(commands=['adduser'])
@@ -80,18 +80,18 @@ async def all_msg(msg: types.Message):
             id_user = msg.forward_from.id
             await bot.send_message(msg.chat.id, f' Подключить {id_user}',reply_markup=otvet1)
         else:
-            await bot.send_message(msg.chat.id, 'Перешли сообщение от того кого хочешь добавить.')
+            await bot.send_message(msg.chat.id, 'Перешли сообщение от того кого хочешь добавить\.')
 
     else:
         logging.info(f'{msg.from_user.id} {msg.text} \n')
-        msg_text = '''1.Для подключения скачай приложение wireguard
-[Wireguard Android](https://play.google.com/store/apps/details?id=com.wireguard.android&hl=ru&gl=US)
-[Wireguard Ios](https://apps.apple.com/us/app/wireguard/id1441195209)
-[wireguard Windos](https://www.wireguard.com/install/)
-2.В боте нажмите кнопку Подключиться🚀 .
-3.Бот вам отправит QR-code и конфигурационый файл.
-4.В приложение отсканируйте QR-code или скачайте конфигурационый файл и
-импортируйте его через приложение.
+        msg_text = '''1\.Для подключения скачай приложение wireguard
+[Wireguard Android](https://play\.google\.com/store/apps/details?id=com.wireguard.android&hl=ru&gl=US)
+[Wireguard Ios](https://apps\.apple\.com/us/app/wireguard/id1441195209)
+[wireguard Windos](https://www\.wireguard\.com/install/)
+2\.В боте нажмите кнопку Подключиться🚀 \.
+3\.Бот вам отправит QR\-code и конфигурационый файл\.
+4\.В приложение отсканируйте QR\-code или скачайте конфигурационый файл и
+импортируйте его через приложение\.
 '''
 
         button1 = InlineKeyboardButton("Подключиться🚀", callback_data='connect')

@@ -47,7 +47,7 @@ def monitor_gift():
     for user in basa_users.keys():
         if basa_users[user]['gift']:
             if time.time() - basa_users[user]['time'] > oneday:
-                close_gift(id_user)
+                close_gift(user)
         else:
             if time.time() - basa_users[user]['time'] > onemount:
                 basa_users.pop(user)
